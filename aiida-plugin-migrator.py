@@ -43,23 +43,28 @@ query = (
     .rename("aiida.orm")
     .select_module("aiida.orm.code")
     .rename("aiida.orm")
+
     # .select_module("aiida.orm.data")
     # .rename("aiida.orm.node.data")
     # https://github.com/aiidateam/aiida_core/pull/2524
     .select_module("aiida.work")
     .rename("aiida.engine")
+
     # https://github.com/aiidateam/aiida_core/pull/2498
     .select_module("aiida.scheduler")
     .rename("aiida.schedulers")
+
     # Move factories from aiida.orm => aiida.plugins
     # Note: This is too greedy as it will also suggest the rename,
     # when other classes are imported on the same line.
     .select_module("aiida.orm")
     .filter(filter_factory_imports)
     .rename("aiida.plugins")
+
     # https://github.com/aiidateam/aiida_core/pull/2498
     .select_module("aiida.transport")
     .rename("aiida.transports")
+
     ## https://github.com/aiidateam/aiida_core/pull/2192
     # .select_class("WorkCalculation")
     # .rename("WorkChainNode")
@@ -73,9 +78,11 @@ query = (
     ## https://github.com/aiidateam/aiida_core/pull/2195
     # .select_class("InlineCalculation")
     # .rename("CalcFunctionNode")
+
     # https://github.com/aiidateam/aiida_core/pull/2517
     .select_class("ParameterData")
     .rename("Dict")
+
     # https://github.com/aiidateam/aiida_core/pull/2357
     # https://github.com/aiidateam/aiida_core/issues/2311#issuecomment-444972896
     .select_module("aiida.control.profile")
@@ -86,6 +93,7 @@ query = (
     .rename("aiida.orm.utils.builders.computer")
     .select_module("aiida.control")
     .rename("aiida.manage.external")
+
     .select_module("aiida.common.orbital")
     .rename("aiida.tools.data.orbital")
     .select_module("aiida.common.additions.config_migrations")
@@ -99,6 +107,7 @@ query = (
     .select_module("aiida.common.graph")
     .rename("aiida.tools.graphviz")
     # TODO: bowler is unfortunately not yet clever enough to understand this:
+    # (write a filter or try something else)
     .select_class("aiida.common.log.DBLogHandler")
     .rename("aiida.orm.utils.log.DBLogHandler")
     .select_module("aiida.common.profile")
@@ -106,6 +115,7 @@ query = (
     .select_module("aiida.common.setup")
     .rename("aiida.manage.setup")
     # TODO: aiida.common.utils
+
     .select_module("aiida.utils.ascii_vis")
     .rename("aiida.cmdline.utils.ascii_vis")
     .select_module("aiida.utils.capturing")
@@ -124,5 +134,6 @@ query = (
     .rename("aiida.common.serialize")
     .select_module("aiida.utils.which")
     .rename("aiida.common.files")
+
     .execute()
 )
