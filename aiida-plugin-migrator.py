@@ -3,6 +3,7 @@ from bowler import Query
 import sys
 
 from bowler.types import LN, Capture, Filename
+from functools import partial
 
 
 # PATTERN = """
@@ -14,6 +15,10 @@ from bowler.types import LN, Capture, Filename
 #            any*
 #    [')'] >
 # """
+
+PATTERN = """
+    power< name=Computer.get trailer< "(" [args=arglist] ")" > any* >
+"""
 
 
 def filter_factory_imports(node: LN, capture: Capture, filename: Filename) -> bool:
@@ -33,6 +38,30 @@ def filter_factory_imports(node: LN, capture: Capture, filename: Filename) -> bo
             return True
     return False
 
+def filter_method_in_class(class_name):
+    """Filters method call by class name.
+
+    Usage:
+    .select_method("my_method")
+    .filter(filter_method_in_class("MyClass"))
+    """
+    def f(node: LN, capture: Capture, filename: Filename) -> bool:
+        """Filter imports of Factory classes."""
+        try:
+            # last child is function arguments
+            # second to last child is function name
+            # third to last child should be class
+            #print(capture["node"].children)
+            cls = capture["function_call"].children[-3].value
+            if cls.strip() == class_name:
+                return True
+            else: 
+                return False
+        except:
+            return False
+
+    return f
+
 
 path = sys.argv[1]
 query = (
@@ -44,10 +73,27 @@ query = (
     .select_module("aiida.orm.code")
     .rename("aiida.orm")
 
-    # .select_module("aiida.orm.data")
-    # .rename("aiida.orm.node.data")
+    .select_method("get")
+    .filter(filter_method_in_class("Computer"))
+    .rename("objects.get")
+
+    .select_module("aiida.orm.data.base")
+    .rename("aiida.orm")
+
+    .select_module("aiida.orm.data")
+    .rename("aiida.orm.node.data")
+
     # https://github.com/aiidateam/aiida_core/pull/2524
     .select_module("aiida.work")
+    .rename("aiida.engine")
+
+    .select_module("aiida.orm.calculation.job")
+    .rename("aiida.engine")
+
+    .select_module("aiida.engine.run")
+    .rename("aiida.engine")
+
+    .select_module("aiida.engine.workchain")
     .rename("aiida.engine")
 
     # https://github.com/aiidateam/aiida_core/pull/2498
@@ -65,6 +111,7 @@ query = (
     .select_module("aiida.transport")
     .rename("aiida.transports")
 
+
     ## https://github.com/aiidateam/aiida_core/pull/2192
     # .select_class("WorkCalculation")
     # .rename("WorkChainNode")
@@ -73,6 +120,9 @@ query = (
     # .rename("WorkFunctionNode")
     ## https://github.com/aiidateam/aiida_core/pull/2184
     ## https://github.com/aiidateam/aiida_core/pull/2201
+    # TODO: one should add a filter here...
+     .select_class("JobCalculation")
+     .rename("CalcJob")
     # .select_class("JobCalculation")
     # .rename("CalcJobNode")
     ## https://github.com/aiidateam/aiida_core/pull/2195
@@ -82,6 +132,7 @@ query = (
     # https://github.com/aiidateam/aiida_core/pull/2517
     .select_class("ParameterData")
     .rename("Dict")
+
 
     # https://github.com/aiidateam/aiida_core/pull/2357
     # https://github.com/aiidateam/aiida_core/issues/2311#issuecomment-444972896

@@ -15,8 +15,8 @@ git clone https://github.com/aiidateam/aiida-plugin-migrator
 cd aiida-plugin-migrator
 pip install -e .
 
-# need modified bowler version
-pip install git+https://github.com/ltalirz/bowler.git@issue_46_rename_import_paths
+# need latest bowler fixes
+pip install git+https://github.com/facebookincubator/Bowler.git@master
 ```
 
 This adds `aiida-plugin-migrator.py` to the `PATH`.
@@ -32,7 +32,7 @@ aiida-plugin-migrator.py /path/to/plugin/code
 Backwards-incompatible changes have been documented in:
 
  * [the AiiDA wiki](https://github.com/aiidateam/aiida_core/wiki/Backward-incompatible-changes-in-1.0.0)
- * [the documentation](https://aiida-core.readthedocs.io/en/provenance_redesign/developer_guide/design/changes.html)
+ * [the documentation](https://aiida-core.readthedocs.io/en/latest/developer_guide/design/changes.html)
  * [this comment](https://github.com/aiidateam/aiida_core/issues/2311#issuecomment-444972896) (for `aiida.utils`)
 
 As the plugin migrator is improved, please keep the Wiki updated.
