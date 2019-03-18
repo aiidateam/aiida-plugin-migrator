@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
-from bowler import Query
 import sys
-
+from bowler import Query
 from bowler.types import LN, Capture, Filename
 from functools import partial
 
@@ -16,16 +15,15 @@ from functools import partial
 #    [')'] >
 # """
 
-PATTERN = """
-    power< name=Computer.get trailer< "(" [args=arglist] ")" > any* >
-"""
-
 
 def filter_factory_imports(node: LN, capture: Capture, filename: Filename) -> bool:
     """Filter imports of Factory classes."""
-    try:
-        imports = [it.value for it in capture["module_imports"]]
-    except:
+
+    if "module_imports" in capture:
+        imports = [it.value.strip() for it in capture["module_imports"]]
+    elif "module_import" in capture:
+        imports = [ capture["module_import"].value.strip() ]
+    else:
         return False
 
     for k in [
@@ -81,7 +79,7 @@ query = (
     .rename("aiida.orm")
 
     .select_module("aiida.orm.data")
-    .rename("aiida.orm.node.data")
+    .rename("aiida.orm.nodes.data")
 
     # https://github.com/aiidateam/aiida_core/pull/2524
     .select_module("aiida.work")
@@ -132,7 +130,6 @@ query = (
     # https://github.com/aiidateam/aiida_core/pull/2517
     .select_class("ParameterData")
     .rename("Dict")
-
 
     # https://github.com/aiidateam/aiida_core/pull/2357
     # https://github.com/aiidateam/aiida_core/issues/2311#issuecomment-444972896
@@ -185,6 +182,10 @@ query = (
     .rename("aiida.common.serialize")
     .select_module("aiida.utils.which")
     .rename("aiida.common.files")
+
+    .select_module("aiida.parsers.exceptions")
+    .rename("aiida.common.exceptions")
+
 
     .execute()
 )
