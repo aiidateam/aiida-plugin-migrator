@@ -68,6 +68,12 @@ query = (
     # https://github.com/aiidateam/aiida_core/pull/2497
     .select_module("aiida.orm.data.parameter")
     .rename("aiida.orm")
+    .select_module("aiida.orm.data.structure")
+    .rename("aiida.orm")
+    .select_module("aiida.orm.data.singlefile")
+    .rename("aiida.orm")
+    .select_module("aiida.orm.data.remote")
+    .rename("aiida.orm")
     .select_module("aiida.orm.code")
     .rename("aiida.orm")
 
@@ -185,6 +191,12 @@ query = (
 
     .select_module("aiida.parsers.exceptions")
     .rename("aiida.common.exceptions")
+
+    # suggestions from Sasha to use top-level modules
+    .select_module("aiida.common.datastructures")
+    .rename("aiida.common")
+    .select_module("aiida.common.exceptions")
+    .rename("aiida.common")
 
 
     .execute()
