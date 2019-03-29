@@ -100,6 +100,10 @@ query = (
     .select_module("aiida.engine.workchain")
     .rename("aiida.engine")
 
+    .select_module("aiida.engine.workfunction")
+    .rename("aiida.engine")
+
+
     # https://github.com/aiidateam/aiida_core/pull/2498
     .select_module("aiida.scheduler")
     .rename("aiida.schedulers")
@@ -198,6 +202,19 @@ query = (
     .select_module("aiida.common.exceptions")
     .rename("aiida.common")
 
+    .select_method("_prepare_for_submission")
+    .rename("prepare_for_submission")
+
+    .select_method("parse_with_retrieved")
+    .modify_argument("retrieved", "**kwargs")
+    .select_method("parse_with_retrieved")
+    .rename("parse")
+
+    .select_method("_set_attr")
+    .rename("set_attribute")
+
+    .select_method("_get_attr")
+    .rename("get_attribute")
 
     .execute()
 )
